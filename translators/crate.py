@@ -354,12 +354,13 @@ class CrateTranslator(BaseTranslator):
         return [r[0] for r in self.cursor.rows]
 
 
-    def _get_select_clause(self, attr_names, aggr_method):
+    def _get_select_clause(self, attr_names, aggr_method, timeproperty):
+        time_index_name = timeproperty if timeproperty else self.TIME_INDEX_NAME
         if attr_names:
             if aggr_method:
                 attrs = ["{}({})".format(aggr_method, a) for a in attr_names]
             else:
-                attrs = [self.TIME_INDEX_NAME]
+                attrs = [time_index_name]
                 attrs.extend(str(a) for a in attr_names)
             select = ",".join(attrs)
 
@@ -380,22 +381,28 @@ class CrateTranslator(BaseTranslator):
         return min(default, limit)
 
 
-    def _get_where_clause(self, entity_id, from_date, to_date, fiware_sp=None):
+    def _get_where_clause(self, entity_id, from_date, to_date, timerel, timeproperty, fiware_sp=None):
         clauses = []
+        print(from_date, to_date, timerel)
+
+        time_index = timeproperty if timeproperty else self.TIME_INDEX_NAME
 
         if entity_id:
             clauses.append(" entity_id = '{}' ".format(entity_id))
         if from_date:
-            clauses.append(" {} >= '{}'".format(self.TIME_INDEX_NAME, from_date))
+            if timerel == "after" or timerel == "between":
+                clauses.append(" {} >= '{}'".format(time_index, from_date))
+            elif timerel == "before":
+                clauses.append(" {} <= '{}'".format(time_index, from_date))
         if to_date:
-            clauses.append(" {} <= '{}'".format(self.TIME_INDEX_NAME, to_date))
+            clauses.append(" {} <= '{}'".format(time_index, to_date))
 
         if fiware_sp:
             # Match prefix of fiware service path
             clauses.append(" "+FIWARE_SERVICEPATH+" ~* '"+fiware_sp+"($|/.*)'")
-        else:
-            # Match prefix of fiware service path
-            clauses.append(" "+FIWARE_SERVICEPATH+" = ''")
+        # else:
+        #     # Match prefix of fiware service path
+        #     clauses.append(" "+FIWARE_SERVICEPATH+" = ''")
 
         where_clause = "where " + "and ".join(clauses)
         return where_clause
@@ -409,7 +416,9 @@ class CrateTranslator(BaseTranslator):
               aggr_method=None,
               from_date=None,
               to_date=None,
-              last_n=None,
+              lastn=None,
+              timerel=None,
+              timeproperty=None,
               limit=10000,
               offset=0,
               fiware_service=None,
@@ -418,12 +427,14 @@ class CrateTranslator(BaseTranslator):
             msg = "For now you must specify entity_type when stating entity_id"
             raise NotImplementedError(msg)
 
-        select_clause = self._get_select_clause(attr_names, aggr_method)
+        select_clause = self._get_select_clause(attr_names, aggr_method, timeproperty)
 
         if not where_clause:
             where_clause = self._get_where_clause(entity_id,
                                                   from_date,
                                                   to_date,
+                                                  timerel,
+                                                  timeproperty,
                                                   fiware_servicepath)
 
         if aggr_method:
@@ -453,6 +464,7 @@ class CrateTranslator(BaseTranslator):
                     limit=limit,
                     offset=offset,
                 )
+            logging.debug(op)
             try:
                 self.cursor.execute(op)
             except ProgrammingError as e:
@@ -468,9 +480,9 @@ class CrateTranslator(BaseTranslator):
                 entities = list(self.translate_to_ngsi(res, col_names, tn))
             result.extend(entities)
 
-        if last_n:
-            # TODO: embed last_n in query to avoid waste.
-            return result[-last_n:]
+        if lastn:
+            # TODO: embed lastn in query to avoid waste.
+            return result[-lastn:]
         return result
 
     # TODO: Remove this method (needs refactoring of the benchmark)

@@ -251,12 +251,22 @@ parameters:
     type: string
     description: "Optional. The final date and time from which the context
     information is queried. Inclusive."
-  lastN:
+  lastn:
     in: query
-    name: lastN
+    name: lastn
     type: integer
     description: "Optional. Used to request only the last N values that satisfy
     the request conditions."
+  timerel:
+    in: query
+    name: timerel
+    type: string
+    description: "Optional. Used for temporal queries."
+  timeproperty:
+    in: query
+    name: timeproperty
+    type: string
+    description: "Optional. Defines the name of the field to be used in the time queries."
   limit:
     in: query
     name: limit
@@ -429,7 +439,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -500,7 +512,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -558,7 +572,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -673,7 +689,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -748,7 +766,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -816,7 +836,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -879,7 +901,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -995,7 +1019,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -1089,7 +1115,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -1185,7 +1213,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -1278,7 +1308,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:
@@ -1382,7 +1414,9 @@ paths:
         - $ref: '#/parameters/options'
         - $ref: '#/parameters/fromDate'
         - $ref: '#/parameters/toDate'
-        - $ref: '#/parameters/lastN'
+        - $ref: '#/parameters/lastn'
+        - $ref: '#/parameters/timerel'
+        - $ref: '#/parameters/timeproperty'
         - $ref: '#/parameters/limit'
         - $ref: '#/parameters/offset'
       responses:

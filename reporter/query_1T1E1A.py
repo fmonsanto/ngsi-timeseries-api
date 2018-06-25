@@ -1,5 +1,29 @@
 from flask import request
 from translators.crate import CrateTranslatorInstance, CrateTranslator
+import logging 
+
+
+def serialize(entities, aggr_method, entity_id, type_, attr_name, timeproperty):
+    if aggr_method:
+        index = []
+    else:
+        index = [str(e[CrateTranslator.TIME_INDEX_NAME]) for e in entities]
+    res = {
+        'id': entity_id,
+        'type': type_,
+        attr_name: [],
+    }
+    
+    time_index_name = timeproperty if timeproperty else CrateTranslator.TIME_INDEX_NAME
+
+    for e in entities:
+        entry = {
+            time_index_name: str(e[time_index_name]),
+            'value': e[attr_name]['value'],
+            'type': e[attr_name]['type']
+        }
+        res[attr_name].append(entry)
+    return res
 
 
 def query_1T1E1A(attr_name,   # In Path
@@ -10,7 +34,9 @@ def query_1T1E1A(attr_name,   # In Path
                  options=None,
                  from_date=None,
                  to_date=None,
-                 last_n=None,
+                 timerel=None,
+                 timeproperty=None,
+                 lastn=None,
                  limit=10000,
                  offset=0):
     """
@@ -39,25 +65,15 @@ def query_1T1E1A(attr_name,   # In Path
                            aggr_method=aggr_method,
                            from_date=from_date,
                            to_date=to_date,
-                           last_n=last_n,
+                           lastn=lastn,
+                           timerel=timerel,
+                           timeproperty=timeproperty,
                            limit=limit,
                            offset=offset,
                            fiware_service=fiware_s,
                            fiware_servicepath=fiware_sp,)
     if entities:
-        if aggr_method:
-            index = []
-        else:
-            index = [str(e[CrateTranslator.TIME_INDEX_NAME]) for e in entities]
-        res = {
-            'data': {
-                'entityId': entity_id,
-                'attrName': attr_name,
-                'index': index,
-                'values': [e[attr_name]['value'] for e in entities]
-            }
-        }
-        return res
+        return serialize(entities, aggr_method, entity_id, type_, attr_name, timeproperty)
 
     r = {
         "error": "Not Found",
